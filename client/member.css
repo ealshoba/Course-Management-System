@@ -1,0 +1,109 @@
+body {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #d1e5f4;
+}
+
+#back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+}
+
+h1,
+h2 {
+    text-align: center;
+}
+
+form {
+    background-color: #e5f3fd;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+#memberAddTermCode,
+#memberDeleteTermCode,
+#memberGetTermCode {
+    margin-left: 3px;
+    width: 30%;
+}
+
+#memberAddSection,
+#memberDeleteSection,
+#memberGetSection {
+    margin-left: 30px;
+    width: 30%;
+}
+
+#memberDeleteList {
+    padding: 10px;
+}
+
+#memberGetRole {
+    margin-left: 48px;
+    width: 30%;
+}
+
+label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input,
+textarea {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+#member-delete-form button {
+    background-color: #ff4c4c;
+    color: #fff;
+}
+
+.result-box {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    background-color: #fff;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li button {
+    width: 100px;
+    background-color: #ff4c4c;
+    border-radius: 10px;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+}
