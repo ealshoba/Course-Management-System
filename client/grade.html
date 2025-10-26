@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Grading</title>
+    <link rel="stylesheet" href="grade.css">
+</head>
+
+<body>
+    <a id="back" href="index.html">&lt &nbsp Back</a>
+    <h1>Manage Grading</h1>
+
+    <section id="view-slot">
+        <h2>View Slot Members</h2>
+        <form id="view-form">
+            <label>Slot ID: <input type="number" id="slotId" required></label>
+            <button type="submit" id="viewSlotBtn">View Slot</button>
+        </form>
+        <ul id="slot-members"></ul>
+    </section>
+
+    <br>
+
+    <section id="add-grade">
+        <h2>Enter / Modify Grade</h2>
+        <form id="grade-form">
+            <label>Member ID: <input type="text" id="memberId" required></label>
+            <label>Signup ID: <input type="number" id="signupId" required></label>
+            <label>Grade: <input type="number" id="grade" min="0" max="999" required></label>
+            <label>Comment: <input type="text" id="comment" maxlength="500"></label>
+            <button type="submit" id="submitGrade">Submit Grade</button>
+        </form>
+    </section>
+
+    <br>
+
+    <section id="grades-log">
+        <h2>Grades Log</h2>
+        <ul id="grades-list"></ul>
+    </section>
+
+    <script defer src="grade.js"></script>
+</body>
+
+</html>
