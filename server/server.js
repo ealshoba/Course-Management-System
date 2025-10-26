@@ -11,11 +11,13 @@ app.use('/', express.static('../client'));
 const courses = require('./courses');
 const members = require('./members');
 const signups = require('./signups');
+const slots = require('./slots');
 
 
 app.use('/api/courses', courses);
 app.use('/api/courses', members);
 app.use('/api/signups', signups);
+app.use('/api/slots', slots);
 
 
 
