@@ -1,0 +1,99 @@
+body {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #d1e5f4;
+}
+
+#back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+}
+
+h1,
+h2 {
+    text-align: center;
+}
+
+#create-signup,
+#signup-list {
+    background-color: #e5f3fd;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    width: 30%;
+}
+
+#termCode,
+#filterTermCode {
+    margin-left: 53px;
+}
+
+#section,
+#filterSection {
+    margin-left: 79px;
+}
+
+#assignmentName {
+    margin-left: 5px;
+}
+
+#notBefore {
+    margin-left: 55px;
+}
+
+#notAfter {
+    margin-left: 64px;
+}
+
+button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    background-color: #fff;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li button {
+    width: 100px;
+    background-color: #ff4c4c;
+    border-radius: 10px;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+}
