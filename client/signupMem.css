@@ -1,0 +1,80 @@
+body {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #d1e5f4;
+}
+
+#back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+}
+
+h1,
+h2 {
+    text-align: center;
+}
+
+section {
+    background-color: #e5f3fd;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    width: 30%;
+}
+
+#signupId,
+#viewSignupId,
+#removeSignupId {
+    margin-left: 16px;
+}
+
+#slotId {
+    margin-left: 37px;
+}
+
+#memberId,
+#removeMemberId {
+    margin-left: 5px;
+}
+
+button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    background-color: #fff;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
