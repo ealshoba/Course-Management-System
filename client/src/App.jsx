@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
 import Home from "./pages/Home";
 import Courses from "./pages/Courses";
+import Members from "./pages/Members";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/home" element={<Home />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/members" element={<Members />} />
 
       </Routes>
     </Router>
