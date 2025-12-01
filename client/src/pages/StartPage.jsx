@@ -18,7 +18,7 @@ export default function StartPage() {
         if (!term) return setResults([]);
 
         try {
-            // 1. Get all courses
+            // Get all courses
             const res = await fetch(API_COURSES);
             const allCourses = await res.json();
 
@@ -28,7 +28,7 @@ export default function StartPage() {
 
             let collected = [];
 
-            // 2. For each matched course → fetch its signup sheets
+            // For each matched course, fetch its signup sheets
             for (const course of matched) {
                 const r = await fetch(`${API_SIGNUPS}/${course.termCode}?section=${course.section}`);
                 const sheets = await r.json();
@@ -46,7 +46,7 @@ export default function StartPage() {
         }
     };
 
-    // Expand a signup sheet → get slots
+    // Expand a signup sheet, get slots
     const toggleExpand = async (signupId) => {
         const isOpen = expanded[signupId];
 
@@ -56,7 +56,7 @@ export default function StartPage() {
             return;
         }
 
-        // expand → fetch slots
+        // expand, fetch slots
         try {
             const res = await fetch(`${API_SLOTS}/${signupId}`);
             const slots = await res.json();
