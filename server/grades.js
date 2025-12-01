@@ -2,84 +2,327 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const { body, param, validationResult } = require('express-validator');
+const { verifyToken, requireRole } = require('./authMiddleware');
 
-const slots = JSON.parse(fs.readFileSync("data/slots.json"));
-const signups = JSON.parse(fs.readFileSync("data/signups.json"));
-let grades = JSON.parse(fs.readFileSync("data/grades.json"));
+// Load JSON files
+function loadJsonFile(path, defaultValue) {
+    try {
+        if (!fs.existsSync(path)) {
+            fs.writeFileSync(path, JSON.stringify(defaultValue, null, 2));
+            return defaultValue;
+        }
+        const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+        if (!data || typeof data !== 'object') throw new Error('Invalid JSON');
+        return data;
+    } catch (e) {
+        fs.writeFileSync(path, JSON.stringify(defaultValue, null, 2));
+        return defaultValue;
+    }
+}
 
-// Get a list of members for a given slot
-router.get('/:slotId', [
-    param('slotId').isInt().withMessage('Slot ID must be a number').toInt(),
-], (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+let slots = loadJsonFile("data/slots.json", {});
+let signups = loadJsonFile("data/signups.json", {});
+let grades = loadJsonFile("data/grades.json", []);
+let auditLogs = loadJsonFile("data/audit.json", []);
+let users = loadJsonFile("data/users.json", []);
 
-    const { slotId } = req.params;
-    let fSlot = null;
+// Save DB
+function saveDB() {
+    fs.writeFileSync("data/grades.json", JSON.stringify(grades, null, 2));
+    fs.writeFileSync("data/audit.json", JSON.stringify(auditLogs, null, 2));
+}
 
-    for (let signupId in slots) {
-        for (let slot of slots[signupId]) {
-            if (slot.slotId == slotId) {
-                fSlot = slot;
+function reloadDB() {
+    grades = loadJsonFile("data/grades.json", []);
+    auditLogs = loadJsonFile("data/audit.json", []);
+}
+
+// Format "YYYY-MM-DD HH:mm"
+function parseDate(str) {
+    return new Date(str.replace(" ", "T"));
+}
+
+// Flatten slots and sort by start time
+function getAllSlots() {
+    let flat = [];
+    for (let signupId in slots) flat.push(...slots[signupId]);
+    return flat.sort((a, b) => parseDate(a.start) - parseDate(b.start));
+}
+
+// Get current slot
+function getCurrentSlot() {
+    const now = new Date();
+    const flat = getAllSlots();
+
+    // Find slot where now is between start and end
+    const current = flat.find(slot => {
+        const start = parseDate(slot.start);
+        const end = new Date(start.getTime() + slot.duration * 60 * 1000);
+        return now >= start && now <= end;
+    });
+
+    // If no ongoing slot, return next upcoming slot
+    if (current) return current;
+    return flat.find(slot => parseDate(slot.start) > now) || null;
+}
+
+// GET slot with merged grade
+router.get('/slot/:slotId',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    [
+        param('slotId').isInt().withMessage("Slot ID must be a number").toInt()
+    ], (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(400).json({ errors: errors.array() });
+
+        const slotId = req.params.slotId;
+        let found = null;
+
+        for (let signupId in slots) {
+            for (let slot of slots[signupId]) {
+                if (slot.slotId == slotId) {
+                    found = { ...slot, signupId: Number(signupId) };
+                    break;
+                }
+            }
+            if (found) break;
+        }
+
+        if (!found) return res.status(404).json({ error: "Slot not found." });
+
+        // Attach grade info
+        found.members = found.members.map(m => {
+            const g = grades.find(gr => gr.memberId === m && gr.signupId === found.signupId);
+            if (!g) return { memberId: m, grade: null };
+
+            const final = g.grade + (g.bonus || 0) - (g.penalty || 0);
+
+            return {
+                memberId: m,
+                grade: g.grade,
+                bonus: g.bonus || 0,
+                penalty: g.penalty || 0,
+                comment: g.comment || "",
+                final
+            };
+        });
+
+        res.json(found);
+    });
+
+// Enter or Update Grade
+router.post('/enter',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    [
+        body('memberId')
+            .isString().withMessage("memberId must be a string")
+            .customSanitizer(v => (v || "").replace(/[^\p{L}\p{N} \-']/gu, "")),
+
+        body('signupId')
+            .isInt().withMessage("signupId must be a number").toInt(),
+
+        body('grade')
+            .isInt({ min: 0, max: 999 }).withMessage("grade must be 0–999").toInt(),
+
+        body('bonus')
+            .optional()
+            .isInt().withMessage("bonus must be integer").toInt(),
+
+        body('penalty')
+            .optional()
+            .isInt().withMessage("penalty must be integer").toInt(),
+
+        body('comment')
+            .isString().withMessage("A comment should be a string.")
+            .notEmpty().withMessage("Comment cannot be empty.")
+            .customSanitizer(v => (v || "").replace(/[^\p{L}\p{N} \-']/gu, ""))
+
+    ], (req, res) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(400).json({ errors: errors.array() });
+
+        const { memberId, signupId, grade, bonus = 0, penalty = 0, comment } = req.body;
+
+        const slotList = slots[String(signupId)];
+        if (!slotList)
+            return res.status(404).json({ error: "Signup ID not found." });
+
+        // Student must be signed up
+        let memberFound = slotList.some(s => s.members.includes(memberId));
+        if (!memberFound)
+            return res.status(404).json({ error: "Member not found in this signup." });
+
+        const taMemberId = req.user?.memberId;  // TA's memberId from the token
+
+        if (!taMemberId) {
+            return res.status(401).json({ error: "Unauthorized: TA memberId not found." });
+        }
+
+        // Get the TA's user info from users.json
+        const ta = users.find(u => u.memberId === taMemberId);
+
+        if (!ta) {
+            return res.status(404).json({ error: "TA not found." });
+        }
+
+        // Get the TA's username from the email (before the @)
+        const username = ta.email.split('@')[0] || "unknownTA";
+        const timestamp = new Date().toISOString();
+
+        const existing = grades.find(g => g.memberId === memberId && g.signupId === signupId);
+
+        // Modify grade
+        if (existing) {
+
+            if (comment.trim() === "")
+                return res.status(400).json({ error: "Modifying a grade requires a comment." });
+
+            const previous = { ...existing };
+
+            existing.grade = grade;
+            existing.bonus = bonus;
+            existing.penalty = penalty;
+            existing.comment = (existing.comment || "") + " " + comment;
+            existing.updatedBy = username;
+            existing.updatedAt = timestamp;
+
+            auditLogs.push({
+                action: "update",
+                timestamp,
+                user: username,
+                previous,
+                updated: existing
+            });
+
+            saveDB();
+            reloadDB();
+
+            return res.json({ message: "Grade updated.", previous, updated: existing });
+        }
+
+        // Create grade
+        if (comment.trim() === "")
+            return res.status(400).json({ error: "Creating a grade requires a comment." });
+
+        const newGrade = {
+            memberId,
+            signupId,
+            grade,
+            bonus,
+            penalty,
+            comment,
+            updatedBy: username,
+            updatedAt: timestamp
+        };
+
+        grades.push(newGrade);
+
+        auditLogs.push({
+            action: "create",
+            timestamp,
+            user: username,
+            grade: newGrade
+        });
+
+        saveDB();
+        reloadDB();
+
+        res.status(201).json({ message: "Grade added.", grade: newGrade });
+    });
+
+router.get('/all-slots',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    (req, res) => {
+        const flat = getAllSlots(); // uses your existing helper to flatten all slots
+        res.json(flat);
+    });
+
+// CURRENT, NEXT, PREVIOUS
+router.get('/current',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    (req, res) => {
+        const slot = getCurrentSlot();
+        if (!slot) return res.status(404).json({ error: "No current slot." });
+        res.json(slot);
+    });
+
+router.get('/previous/:slotId',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    (req, res) => {
+        const slotId = parseInt(req.params.slotId);
+
+        // Find the signup that contains this slot
+        let signupIdFound = null;
+        for (let sid in slots) {
+            if (slots[sid].some(s => s.slotId === slotId)) {
+                signupIdFound = sid;
                 break;
             }
         }
-        if (fSlot) break;
-    }
 
-    if (!fSlot) return res.status(404).json({ error: "Slot not found." });
+        if (!signupIdFound) return res.status(404).json({ error: "Slot not found." });
 
-    res.json(fSlot);
-});
+        const slotList = slots[signupIdFound];
+        const idx = slotList.findIndex(s => s.slotId === slotId);
 
-//Enter (or modify if exists) a grade
-router.post('/enter', [
-    body('memberId').isString().withMessage('Member ID must be a string').customSanitizer(value => value.replace(/[^\p{L}\p{N} \-']/gu, '')),
-    body('signupId').isInt().withMessage('Signup ID must be a number').toInt(),
-    body('grade').isInt({ min: 0, max: 999 }).withMessage('Grade must be a number between 0 and 999').toInt(),
-    body('comment').optional().isString().customSanitizer(value => value.replace(/[^\p{L}\p{N} \-']/gu, ''))
-], (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+        if (idx <= 0) return res.status(404).json({ error: "No previous slot in this signup." });
 
-    const { memberId, signupId, grade, comment } = req.body;
+        res.json(slotList[idx - 1]);
+    });
 
-    if (!memberId || !signupId) return res.status(400).json({ error: "memberId and signupId are required." });
 
-    const slotList = slots[String(signupId)];
-    if (!slotList) return res.status(404).json({ error: "Signup ID not found." });
+router.get('/next/:slotId',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    (req, res) => {
+        const slotId = parseInt(req.params.slotId);
 
-    let memberFound = false;
-    for (const s of slotList) {
-        if (s.members.includes(memberId)) {
-            memberFound = true;
-            break;
+        // Find the signup that contains this slot
+        let signupIdFound = null;
+        for (let sid in slots) {
+            if (slots[sid].some(s => s.slotId === slotId)) {
+                signupIdFound = sid;
+                break;
+            }
         }
-    }
 
-    if (!memberFound) return res.status(404).json({ error: "Member not found under this signup ID." });
+        if (!signupIdFound) return res.status(404).json({ error: "Slot not found." });
 
-    const existing = grades.find(g => g.memberId == memberId && g.signupId == signupId);
+        const slotList = slots[signupIdFound];
+        const idx = slotList.findIndex(s => s.slotId === slotId);
 
-    if (existing) {
-        const oldGrade = existing.grade;
-        if (comment) existing.comment = (existing.comment || "") + " " + comment;
-        existing.grade = grade;
-        fs.writeFileSync("data/grades.json", JSON.stringify(grades, null, 2));
-        return res.json({ message: "Grade updated.", oldGrade, updated: existing });
-    }
+        if (idx === -1 || idx + 1 >= slotList.length)
+            return res.status(404).json({ error: "No next slot in this signup." });
 
-    const newGrade = {
-        memberId,
-        signupId,
-        grade,
-        comment: comment || ""
-    };
+        res.json(slotList[idx + 1]);
+    });
 
-    grades.push(newGrade);
-    fs.writeFileSync("data/grades.json", JSON.stringify(grades, null, 2));
+// AUDIT HISTORY
+router.get('/audit/:memberId/:signupId',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    (req, res) => {
+        const { memberId, signupId } = req.params;
 
-    res.status(201).json({ message: "Grade added.", grade: newGrade });
-});
+        const history = auditLogs.filter(
+            log =>
+                log.grade?.memberId === memberId &&
+                log.grade?.signupId == signupId
+        );
+
+        if (history.length === 0)
+            return res.status(404).json({ error: "No audit history found." });
+
+        res.json(history);
+    });
 
 module.exports = router;
