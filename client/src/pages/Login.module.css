@@ -1,0 +1,60 @@
+.loginPage {
+    max-width: 500px;
+    margin: 100px auto;
+}
+
+.loginPage .back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+}
+
+.loginPage .title {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.loginContainer {
+    background-color: #e5f3fd;
+    padding: 40px;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+}
+
+.loginContainer form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.loginContainer label {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.loginContainer input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    width: 60%;
+}
+
+.loginContainer button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+.loginPage .error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
