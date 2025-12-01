@@ -2,9 +2,26 @@ const express = require('express');
 const { body, param, query, validationResult } = require('express-validator');
 const router = express.Router();
 const fs = require('fs');
+const { verifyToken, requireRole } = require('./authMiddleware');
 
-const signups = JSON.parse(fs.readFileSync("data/signups.json"));
-const courses = JSON.parse(fs.readFileSync("data/courses.json"));
+function loadJsonFile(path, defaultValue) {
+    try {
+        if (!fs.existsSync(path)) {
+            fs.writeFileSync(path, JSON.stringify(defaultValue, null, 2));
+            return defaultValue;
+        }
+        const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+        if (!data || typeof data !== 'object') throw new Error('Invalid JSON');
+        return data;
+    } catch (e) {
+        fs.writeFileSync(path, JSON.stringify(defaultValue, null, 2));
+        return defaultValue;
+    }
+}
+
+const signups = loadJsonFile("data/signups.json", []);
+const courses = loadJsonFile("data/courses.json", []);
+const slots = loadJsonFile("data/slots.json", {});
 
 function getNextSignupId() {
     if (signups.length === 0) return 1;
@@ -14,6 +31,8 @@ function getNextSignupId() {
 // Create a signup sheet
 router.post(
     '/create',
+    verifyToken,
+    requireRole('admin', 'ta'),
     [
         body('termCode')
             .exists().withMessage('termCode is required.')
@@ -50,6 +69,14 @@ router.post(
         const course = courses.find(c => c.termCode == termCode && c.section == section);
         if (!course) return res.status(404).json({ error: "Course not found." });
 
+        const existingSignup = signups.find(
+            signup => signup.termCode === termCode && signup.section === section && signup.assignmentName === assignmentName
+        );
+
+        if (existingSignup) {
+            return res.status(400).json({ error: "A sign-up sheet with this assignment name already exists for this course." });
+        }
+
         const newSignup = {
             signupId: getNextSignupId(),
             termCode,
@@ -69,6 +96,8 @@ router.post(
 // Get signup sheets for a course
 router.get(
     '/:termCode',
+    verifyToken,
+    requireRole('admin', 'ta'),
     [
         param('termCode')
             .exists().withMessage('termCode is required.')
@@ -96,6 +125,8 @@ router.get(
 // Delete a signup sheet
 router.delete(
     '/delete',
+    verifyToken,
+    requireRole('admin', 'ta'),
     [
         body('signupId')
             .exists().withMessage('signupId required.')
@@ -108,13 +139,28 @@ router.delete(
 
         let { signupId } = req.body;
 
+        // Find the sign-up sheet to delete
+        const signupSheet = signups.find(signup => signup.signupId == signupId);
+        if (!signupSheet) return res.status(404).json({ error: "Signup sheet not found." });
+
+        // Check if the signupId has any associated slots
+        const slotsForSignup = slots[signupId];
+        if (slotsForSignup && slotsForSignup.length > 0) {
+            return res.status(400).json({ error: "Cannot delete a sign-up sheet that has associated slots." });
+        }
+
+        // Proceed with the deletion if no slots exist
         const index = signups.findIndex(signup => signup.signupId == signupId);
+        signups.splice(index, 1);
 
-        if (index === -1) return res.status(404).json({ error: "Signup sheet not found." });
+        // Remove the corresponding slots 
+        delete slots[signupId];
 
-        const removed = signups.splice(index, 1);
+        // Write back to the files
         fs.writeFileSync("data/signups.json", JSON.stringify(signups, null, 2));
-        res.json({ deleted: removed[0] });
+        fs.writeFileSync("data/slots.json", JSON.stringify(slots, null, 2));
+
+        res.json({ deleted: signupSheet });
     }
 );
 
