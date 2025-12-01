@@ -6,6 +6,7 @@ import ChangePassword from "./pages/ChangePassword";
 import Home from "./pages/Home";
 import Courses from "./pages/Courses";
 import Members from "./pages/Members";
+import Signup from "./pages/Signup";
 
 
 function App() {
@@ -18,7 +19,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/members" element={<Members />} />
-
+        <Route path="/signup" element={<Signup />} />
+        
       </Routes>
     </Router>
   );
