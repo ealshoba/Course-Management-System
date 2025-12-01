@@ -1,0 +1,82 @@
+.SlotContainer {
+    padding: 20px;
+}
+
+.SlotContainer .title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.SlotContainer .section {
+    background-color: #e5f3fd;
+    padding: 20px;
+    padding-top: 30px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+}
+
+.SlotContainer h2 {
+    text-align: center;
+}
+
+.SlotContainer form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+}
+
+.SlotContainer label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.SlotContainer input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    width: 60%;
+}
+
+.SlotContainer button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+.SlotContainer .list {
+    padding: 0;
+}
+
+.SlotContainer .list li {
+    background-color: #fff;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.SlotContainer .list li button {
+    width: 100px;
+    background-color: #ff4c4c;
+    border-radius: 10px;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+}
+
+.SlotContainer .back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+}

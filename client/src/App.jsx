@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Courses from "./pages/Courses";
 import Members from "./pages/Members";
 import Signup from "./pages/Signup";
+import Slot from "./pages/SlotManager";
 
 
 function App() {
@@ -20,7 +21,8 @@ function App() {
         <Route path="/courses" element={<Courses />} />
         <Route path="/members" element={<Members />} />
         <Route path="/signup" element={<Signup />} />
-        
+        <Route path="/slots" element={<Slot />} />
+
       </Routes>
     </Router>
   );
