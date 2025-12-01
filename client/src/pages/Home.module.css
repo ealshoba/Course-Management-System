@@ -1,0 +1,81 @@
+.homePage-links {
+    background-color: #e5f3fd;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 10vh;
+    border-radius: 20px;
+}
+
+.left,
+.right {
+    position: absolute;
+    top:5%;
+}
+
+.left {
+    left: 25%;
+}
+
+.right {
+    right: 25%;
+}
+
+.homePage .login,
+.homePage .logout,
+.homePage .password {
+    width: 150px;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+    margin: 0 auto;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+
+.home-container {
+    background-color: #e5f3fd;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh;
+    text-align: center;
+    padding: 0 20px;
+    border-radius: 20px;
+}
+
+.homePage .title {
+    margin: 0;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.home-container p {
+    margin: 15px 0;
+}
+
+.home-container a {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.home-container a:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
