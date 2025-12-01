@@ -26,8 +26,6 @@ let signups = loadJSON(signupPath);
 
 router.get(
     '/',
-    verifyToken,
-    requireRole('admin', 'ta'),
     (req, res) => {
     res.json(courses.map(course => ({
         termCode: course.termCode,

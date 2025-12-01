@@ -58,7 +58,7 @@ export default function StartPage() {
 
         // expand, fetch slots
         try {
-            const res = await fetch(`${API_SLOTS}/${signupId}`);
+            const res = await fetch(`${API_SLOTS}/signupId/${signupId}`);
             const slots = await res.json();
 
             setExpanded(prev => ({ ...prev, [signupId]: slots }));

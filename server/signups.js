@@ -96,8 +96,6 @@ router.post(
 // Get signup sheets for a course
 router.get(
     '/:termCode',
-    verifyToken,
-    requireRole('admin', 'ta'),
     [
         param('termCode')
             .exists().withMessage('termCode is required.')

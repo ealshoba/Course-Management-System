@@ -132,8 +132,6 @@ router.post(
 // Get list of slots for a signup sheet
 router.get(
     '/signupId/:signupId',
-    verifyToken,
-    requireRole('admin', 'ta'),
     [param('signupId').isInt().withMessage('signupId must be an integer.')],
     (req, res) => {
         const errors = validationResult(req);
