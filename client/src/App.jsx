@@ -4,6 +4,7 @@ import StartPage from "./pages/StartPage";
 import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
 import Home from "./pages/Home";
+import Courses from "./pages/Courses";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/courses" element={<Courses />} />
 
       </Routes>
     </Router>

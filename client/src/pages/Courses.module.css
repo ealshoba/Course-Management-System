@@ -1,0 +1,92 @@
+body {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #d1e5f4;
+}
+
+.coursesContainer {
+    padding: 20px;
+}
+
+.coursesContainer .title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.createCourse,
+.modifyCourse,
+.courseList {
+    background-color: #e5f3fd;
+    padding: 20px;
+    padding-top: 30px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+}
+
+.coursesContainer h2 {
+    text-align: center;
+}
+
+.coursesContainer form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+    border: 1px;
+    width: 60%;
+}
+
+.coursesContainer label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coursesContainer input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    width: 60%;
+}
+
+.coursesContainer button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+.coursesContainer ul {
+    padding: 0;
+}
+
+.coursesContainer li {
+    background-color: #fff;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coursesContainer li button {
+    width: 100px;
+    background-color: #ff4c4c;
+    border-radius: 10px;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+}
+
+.coursesContainer .back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+}
