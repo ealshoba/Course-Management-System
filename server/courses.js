@@ -2,14 +2,33 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const fs = require('fs');
 const router = express.Router();
+const { verifyToken, requireRole } = require('./authMiddleware');
 
 const dataPath = "data/courses.json";
+const signupPath = "data/signups.json";
 
 // Load initial data
-let courses = JSON.parse(fs.readFileSync(dataPath));
+function loadJSON(path) {
+    try {
+        if (!fs.existsSync(path)) fs.writeFileSync(path, '[]');
+        const raw = fs.readFileSync(path, 'utf8');
+        const data = JSON.parse(raw);
+        return Array.isArray(data) ? data : [];
+    } catch (err) {
+        fs.writeFileSync(path, '[]');
+        return [];
+    }
+}
+
+let courses = loadJSON(dataPath);
+let signups = loadJSON(signupPath);
 
 
-router.get('/', (req, res) => {
+router.get(
+    '/',
+    verifyToken,
+    requireRole('admin', 'ta'),
+    (req, res) => {
     res.json(courses.map(course => ({
         termCode: course.termCode,
         courseName: course.courseName,
@@ -20,6 +39,8 @@ router.get('/', (req, res) => {
 // Creat a course
 router.post(
     '/create',
+    verifyToken,
+    requireRole('admin', 'ta'),
     [
         body('termCode')
             .exists().withMessage('termCode is required.')
@@ -68,6 +89,8 @@ router.post(
 // Modify a course
 router.put(
     '/modify',
+    verifyToken,
+    requireRole('admin', 'ta'),
     [
         body('termCode')
             .exists().withMessage('termCode is required.')
@@ -105,6 +128,14 @@ router.put(
             return res.status(404).json({ error: 'Course not found.' });
         }
 
+        const hasSignupSheet = signups.some(s => s.termCode === termCode && s.section === section);
+        if (hasSignupSheet) {
+            
+            if (newSection) {
+                return res.status(400).json({ error: 'Cannot modify section: course has an associated sign-up sheet.' });
+            }
+        }
+
         if (newSection && newSection !== section) {
             const conflict = courses.find(c => c.termCode === termCode && c.section === newSection);
             if (conflict) {
@@ -113,7 +144,8 @@ router.put(
         }
 
         if (courseName) courses[index].courseName = courseName;
-        if (newSection) courses[index].section = newSection;
+        
+        if (newSection && !hasSignupSheet) courses[index].section = newSection;
 
         fs.writeFileSync(dataPath, JSON.stringify(courses, null, 2));
 
@@ -124,6 +156,8 @@ router.put(
 // Delete a course
 router.delete(
     '/delete',
+    verifyToken,
+    requireRole('admin', 'ta'),
     [
         body('termCode')
             .exists().withMessage('termCode is required.')
@@ -146,6 +180,11 @@ router.delete(
         const index = courses.findIndex(c => c.termCode === termCode && c.section === section);
         if (index === -1) {
             return res.status(404).json({ error: 'Course not found.' });
+        }
+
+        const hasSignupSheet = signups.some(s => s.termCode === termCode && s.section === section);
+        if (hasSignupSheet) {
+            return res.status(400).json({ error: 'Cannot delete course: course has an associated sign-up sheet.' });
         }
 
         const removed = courses.splice(index, 1);
