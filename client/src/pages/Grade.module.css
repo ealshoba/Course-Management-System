@@ -1,0 +1,75 @@
+.GradeContainer {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #d1e5f4;
+    padding: 20px;
+}
+
+.GradeContainer .back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.GradeContainer h1,
+.GradeContainer h2 {
+    text-align: center;
+}
+
+.GradeContainer .section {
+    background-color: #e5f3fd;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
+
+.GradeContainer .form {
+    display: flex;
+    flex-direction: column;
+}
+
+.GradeContainer label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.GradeContainer input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    width: 30%;
+}
+
+.GradeContainer button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+.GradeContainer .list {
+    padding: 0;
+    list-style: none;
+}
+
+.GradeContainer .item {
+    background-color: #fff;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.GradeContainer .item span {
+    font-weight: bold;
+}

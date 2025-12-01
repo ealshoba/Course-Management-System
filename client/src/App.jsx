@@ -9,7 +9,7 @@ import Members from "./pages/Members";
 import Signup from "./pages/Signup";
 import Slot from "./pages/SlotManager";
 import SignupMem from "./pages/SignupMem";
-
+import Grade from "./pages/GradeManager";
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/slots" element={<Slot />} />
         <Route path="/signup-members" element={<SignupMem />} />
-
+        <Route path="/grades" element={<Grade />} />
       </Routes>
     </Router>
   );
