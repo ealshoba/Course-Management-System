@@ -1,0 +1,107 @@
+.startPage {
+    padding-top: 70px;
+    text-align: center;
+}
+
+.container {
+    background-color: #e5f3fd;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 45vh;
+    text-align: center;
+    padding: 0 50px;
+    border-radius: 50px;
+}
+
+.startPageSearch{
+    background-color: #e5f3fd;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 25vh;
+    text-align: center;
+    padding: 0 50px;
+    border-radius: 50px;
+}
+
+.startPage .title {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+.startPage .description {
+    margin: 15px 0;
+    font-size: 1.2rem;
+}
+
+.startPage .loginButton {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+
+.startPage .searchBox {
+    width: 250px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #aaa;
+    margin-top: 10px;
+}
+
+.startPage .searchButton {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.startPage .results {
+    margin-top: 40px;
+    padding: 20px;
+}
+
+.startPage .courseBlock {
+    margin-bottom: 30px;
+    padding: 15px;
+    background: #e5f3fd;
+    border-radius: 12px;
+}
+
+.startPage .sheetItem {
+    margin-top: 15px;
+    padding: 12px;
+    background: #eef6ff;
+    border: 1px solid #bcd;
+    border-radius: 10px;
+}
+
+.startPage .sheetHeader {
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.startPage .slotList {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.startPage .slotItem {
+    background: #fff;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+}
