@@ -1,0 +1,70 @@
+.SignupMemContainer {
+    padding: 20px;
+}
+
+.SignupMemContainer .back {
+    background: #e5f3fd;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-decoration: none;
+}
+
+.SignupMemContainer .title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.SignupMemContainer .section {
+    background-color: #e5f3fd;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+}
+
+.SignupMemContainer h2 {
+    text-align: center;
+}
+
+.SignupMemContainer form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.SignupMemContainer label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.SignupMemContainer input {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    width: 60%;
+}
+
+.SignupMemContainer button {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+.SignupMemContainer .list {
+    padding: 0;
+    list-style: none;
+}
+
+.SignupMemContainer .list li {
+    background-color: #fff;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
