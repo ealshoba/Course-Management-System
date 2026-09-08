@@ -1,10 +1,68 @@
-# SE 3316 - Lab 3/4
-Please put all front-end files in the folder named `client` and all back-end files in the folder named `server`.
+# Course Management System
 
-For lab 3, edit `client/index.html` file to add necessary HTML and add links to your CSS files. Add your front-end JavaScript code to `client/lab3.js` Put all your CSS and any other JavaScript files in the `client` folder. Put all your front-end assets in `client/img` folder and back-end assets in `server/data` folder. Git will ignore content in these folders and you must copy them separately to the server when you are deploying.
+A full-stack Course Management System developed independently as a university project. The application supports three roles: **Administrators, Teaching Assistants, and Students**.
 
-For lab 4, create front-end framework inside `client` folder.
+## Features
 
-Edit `server/server.js` file to add JavaScript code that implements your REST API.
+- User authentication and role-based authorization
+- Course and section management
+- Student enrollment and management
+- Signup sheet and time-slot management
+- Grade entry, modification, and audit history
+- Password hashing and JWT-based authentication
+- Protected frontend routes and backend API endpoints
+- Persistent JSON-based data storage
+- REST API communication between the frontend and backend
 
-If you use any AI tools, please record the prompts in the file `ai-prompts.txt`. Commit history of this file must match the code changes in your repository.
+## Running the Project
+
+### Backend
+
+Navigate to the `server` folder and install the required dependencies:
+
+```bash
+cd server
+npm install
+npm install bcryptjs jsonwebtoken dotenv nodemon
+```
+
+Create a `.env` file inside the `server` folder:
+
+```bash
+JWT_SECRET=mySuperSecretKey
+JWT_EXPIRES=10h
+```
+
+The application requires an administrator account to be created manually in `server/data/users.json`.
+Add the following object to the `users.json` file:
+
+```bash
+{
+  "memberId": "M0000001",
+  "email": "admin@gmail.com",
+  "password": "$2b$10$8m42dXdhw1MreHROo3Et0.QGkhCG4aLwn3jrn4qYUqYRpCeV/P8G2",
+  "role": "admin",
+  "mustChangePassword": true
+}
+```
+
+The password for this account is: `admin`
+
+Start the backend server:
+```bash
+npx nodemon server.js
+```
+
+### Frontend
+Open a new terminal and navigate to the `client` folder:
+```bash
+cd client
+npm install
+npm install jwt-decode
+```
+
+Start the frontend development server:
+```bash
+npm run dev
+```
+Vite will display the local URL where the application can be accessed.
